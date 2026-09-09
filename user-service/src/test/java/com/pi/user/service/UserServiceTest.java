@@ -48,6 +48,7 @@ class UserServiceTest {
 
     @BeforeEach
     void setUp() {
+        userService = new UserServiceImpl(userRepository, userMapper, authServiceClient);
         sampleRequest = new CreateUserRequest(
                 "Sanchit Kumar",
                 "+91 9999999999",

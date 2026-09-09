@@ -18,13 +18,18 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final AuthServiceClient authServiceClient;
+
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, AuthServiceClient authServiceClient) {
+        this.userRepository = userRepository;
+        this.userMapper = userMapper;
+        this.authServiceClient = authServiceClient;
+    }
 
     @Override
     @Transactional
