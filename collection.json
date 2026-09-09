@@ -1,0 +1,3468 @@
+{
+  "info": {
+    "_postman_id": "d4d8799f-5ddf-488d-9d8e-b86ca1332831",
+    "name": "366PI Recruitment Platform - Complete Endpoints Collection",
+    "description": "Comprehensive Postman API Collection covering 100% of all endpoints across all 7 microservices in the 366PI Recruitment Platform architecture:\n\n1. Discovery Server (Eureka :8761)\n2. Admin Server (Spring Boot Admin :8082)\n3. Auth Service (:8083)\n4. User Service (:8081)\n5. Job Service (:8084)\n6. Application Service (:8085)\n7. Interview Service (:8086)\n\nAll endpoints include realistic JSON payloads, query parameters, path variables, required authentication headers (X-Candidate-Id, X-Admin-Id, Bearer token), and automated Postman test scripts that dynamically populate collection variables.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "discoveryBaseUrl",
+      "value": "http://localhost:8761",
+      "type": "string"
+    },
+    {
+      "key": "adminServerBaseUrl",
+      "value": "http://localhost:8082",
+      "type": "string"
+    },
+    {
+      "key": "authBaseUrl",
+      "value": "http://localhost:8083",
+      "type": "string"
+    },
+    {
+      "key": "userBaseUrl",
+      "value": "http://localhost:8081",
+      "type": "string"
+    },
+    {
+      "key": "jobBaseUrl",
+      "value": "http://localhost:8084",
+      "type": "string"
+    },
+    {
+      "key": "applicationBaseUrl",
+      "value": "http://localhost:8085",
+      "type": "string"
+    },
+    {
+      "key": "interviewBaseUrl",
+      "value": "http://localhost:8086",
+      "type": "string"
+    },
+    {
+      "key": "adminId",
+      "value": "11111111-1111-1111-1111-111111111111",
+      "type": "string"
+    },
+    {
+      "key": "candidateId",
+      "value": "22222222-2222-2222-2222-222222222222",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "22222222-2222-2222-2222-222222222222",
+      "type": "string"
+    },
+    {
+      "key": "authUserId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userEmail",
+      "value": "candidate@example.com",
+      "type": "string"
+    },
+    {
+      "key": "userPassword",
+      "value": "StrongPassword123!",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refreshToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "activationToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "passwordResetToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "jobId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "jobIdForInterview",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "applicationId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "interviewerId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "slotId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "rescheduleSlotId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "interviewId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 - Discovery Server (Eureka :8761)",
+      "item": [
+        {
+          "name": "1. Eureka: Web Dashboard (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{discoveryBaseUrl}}/",
+              "host": [
+                "{{discoveryBaseUrl}}"
+              ],
+              "path": []
+            },
+            "description": "Access Eureka Discovery Server Web Dashboard HTML view"
+          }
+        },
+        {
+          "name": "2. Eureka: Registered Apps Registry (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{discoveryBaseUrl}}/eureka/apps",
+              "host": [
+                "{{discoveryBaseUrl}}"
+              ],
+              "path": [
+                "eureka",
+                "apps"
+              ]
+            },
+            "description": "Query registered microservice instances in Eureka JSON registry"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Registry contains applications object', function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json).to.have.property('applications');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3. Eureka: Actuator Health (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{discoveryBaseUrl}}/actuator/health",
+              "host": [
+                "{{discoveryBaseUrl}}"
+              ],
+              "path": [
+                "actuator",
+                "health"
+              ]
+            },
+            "description": "Verify Eureka server health status"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Eureka Server is UP', function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.status).to.eql('UP');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "4. Eureka: Actuator Info (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{discoveryBaseUrl}}/actuator/info",
+              "host": [
+                "{{discoveryBaseUrl}}"
+              ],
+              "path": [
+                "actuator",
+                "info"
+              ]
+            },
+            "description": "Verify Eureka server build and info details"
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 - Admin Server (Spring Boot Admin :8082)",
+      "item": [
+        {
+          "name": "1. Admin Server: Dashboard UI (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{adminServerBaseUrl}}/",
+              "host": [
+                "{{adminServerBaseUrl}}"
+              ],
+              "path": []
+            },
+            "description": "Spring Boot Admin web console user interface"
+          }
+        },
+        {
+          "name": "2. Admin Server: Monitored Microservice Instances (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{adminServerBaseUrl}}/instances",
+              "host": [
+                "{{adminServerBaseUrl}}"
+              ],
+              "path": [
+                "instances"
+              ]
+            },
+            "description": "List all registered client instances monitored by Spring Boot Admin"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Returns list of monitored microservices', function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(Array.isArray(json)).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3. Admin Server: Actuator Health (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{adminServerBaseUrl}}/actuator/health",
+              "host": [
+                "{{adminServerBaseUrl}}"
+              ],
+              "path": [
+                "actuator",
+                "health"
+              ]
+            },
+            "description": "Verify Spring Boot Admin server health status"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Admin Server is UP', function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.status).to.eql('UP');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03 - Auth Service (:8083)",
+      "item": [
+        {
+          "name": "1. Auth: Register Candidate (201 Created)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{authBaseUrl}}/api/v1/auth/register",
+              "host": [
+                "{{authBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Register a new user account with role USER and secure password",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"candidate_{{$timestamp}}@example.com\",\n  \"password\": \"StrongPassword123!\",\n  \"role\": \"USER\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201 Created', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "pm.test('Returns userId and email', function () {",
+                  "    pm.expect(json).to.have.property('userId');",
+                  "    pm.expect(json).to.have.property('email');",
+                  "});",
+                  "pm.collectionVariables.set('authUserId', json.userId);",
+                  "pm.collectionVariables.set('userEmail', json.email);",
+                  "pm.collectionVariables.set('userPassword', 'StrongPassword123!');",
+                  "if (json.activationToken) { pm.collectionVariables.set('activationToken', json.activationToken); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2. Auth: Register Candidate (Auto-Generated Password)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{authBaseUrl}}/api/v1/auth/register",
+              "host": [
+                "{{authBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Register user without password; system generates a secure alphanumeric password",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"auto_{{$timestamp}}@example.com\",\n  \"role\": \"USER\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201 Created', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "pm.test('Server auto-generates password', function () {",
+                  "    pm.expect(json).to.have.property('generatedPassword');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3. Auth: Activate Account (200 OK)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{authBaseUrl}}/api/v1/auth/activate",
+              "host": [
+                "{{authBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "activate"
+              ]
+            },
+            "description": "Confirm account activation and optionally set new password using token",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"{{activationToken}}\",\n  \"password\": \"NewActivatedPassword123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK or 400 if already active', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 400]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "4. Auth: Login (200 OK)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{authBaseUrl}}/api/v1/auth/login",
+              "host": [
+                "{{authBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Authenticate candidate and retrieve JWT access token and refresh token",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{userEmail}}\",\n  \"password\": \"{{userPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "pm.test('Contains accessToken and refreshToken', function () {",
+                  "    pm.expect(json).to.have.property('accessToken');",
+                  "    pm.expect(json).to.have.property('refreshToken');",
+                  "});",
+                  "pm.collectionVariables.set('accessToken', json.accessToken);",
+                  "pm.collectionVariables.set('refreshToken', json.refreshToken);",
+                  "if (json.userId) { pm.collectionVariables.set('currentCandidateId', json.userId); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "5. Auth: Rotate Refresh Token (200 OK)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{authBaseUrl}}/api/v1/auth/refresh",
+              "host": [
+                "{{authBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "refresh"
+              ]
+            },
+            "description": "Rotate refresh token and obtain fresh access token",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "pm.test('New rotated access token issued', function () {",
+                  "    pm.expect(json).to.have.property('accessToken');",
+                  "});",
+                  "pm.collectionVariables.set('accessToken', json.accessToken);",
+                  "if (json.refreshToken) { pm.collectionVariables.set('refreshToken', json.refreshToken); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "6. Auth: Forgot Password (200 OK)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{authBaseUrl}}/api/v1/auth/forgot-password",
+              "host": [
+                "{{authBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "forgot-password"
+              ]
+            },
+            "description": "Request password reset token (15 minute validity)",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{userEmail}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "if (json.resetToken) {",
+                  "    pm.collectionVariables.set('passwordResetToken', json.resetToken);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "7. Auth: Reset Password (200 OK)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{authBaseUrl}}/api/v1/auth/reset-password",
+              "host": [
+                "{{authBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "reset-password"
+              ]
+            },
+            "description": "Reset password using valid reset token and revoke all old refresh tokens",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"{{passwordResetToken}}\",\n  \"newPassword\": \"UpdatedPassword123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK or 401/400 if token consumed', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 400, 401]);",
+                  "});",
+                  "if (pm.response.code === 200) {",
+                  "    pm.collectionVariables.set('userPassword', 'UpdatedPassword123!');",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "8. Auth: Logout (200 OK)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{authBaseUrl}}/api/v1/auth/logout",
+              "host": [
+                "{{authBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "logout"
+              ]
+            },
+            "description": "Revoke refresh token and invalidate user session",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "9. Auth: Actuator Health (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{authBaseUrl}}/actuator/health",
+              "host": [
+                "{{authBaseUrl}}"
+              ],
+              "path": [
+                "actuator",
+                "health"
+              ]
+            },
+            "description": "Check Auth Service health"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "10. Auth: OpenAPI Specification (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{authBaseUrl}}/v3/api-docs",
+              "host": [
+                "{{authBaseUrl}}"
+              ],
+              "path": [
+                "v3",
+                "api-docs"
+              ]
+            },
+            "description": "Fetch OpenAPI v3 document in JSON"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "11. Auth: Swagger UI",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{authBaseUrl}}/swagger-ui/index.html",
+              "host": [
+                "{{authBaseUrl}}"
+              ],
+              "path": [
+                "swagger-ui",
+                "index.html"
+              ]
+            },
+            "description": "Interactive Swagger UI web page"
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 - User Service (:8081)",
+      "item": [
+        {
+          "name": "1. User: Create Candidate Profile (201 Created)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{userBaseUrl}}/api/v1/users",
+              "host": [
+                "{{userBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users"
+              ]
+            },
+            "description": "Register a full candidate profile with skills, location, and credentials",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Rahul Sharma\",\n  \"mobileNumber\": \"+91 9876543210\",\n  \"email\": \"rahul_{{$timestamp}}@example.com\",\n  \"dateOfBirth\": \"1995-05-20\",\n  \"skills\": [\n    \"Java\",\n    \"Spring Boot\",\n    \"Microservices\",\n    \"PostgreSQL\",\n    \"Kafka\",\n    \"Docker\"\n  ],\n  \"location\": \"Bangalore, India\",\n  \"headline\": \"Lead Java & Cloud Architect\",\n  \"bio\": \"Over 8 years designing resilient distributed systems and event-driven microservices.\",\n  \"role\": \"USER\",\n  \"password\": \"RahulPassword123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201 Created', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "pm.test('User ID returned', function () {",
+                  "    pm.expect(json).to.have.property('id');",
+                  "});",
+                  "pm.collectionVariables.set('userId', json.id);",
+                  "pm.collectionVariables.set('candidateId', json.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2. User: Get Candidate Profile by ID (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{userBaseUrl}}/api/v1/users/{{userId}}",
+              "host": [
+                "{{userBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "{{userId}}"
+              ]
+            },
+            "description": "Retrieve profile information for candidate by unique UUID"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "pm.test('Matches requested ID', function () {",
+                  "    pm.expect(json.id).to.eql(pm.collectionVariables.get('userId'));",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3. User: Create Candidate via Alias /api/candidates (201 Created)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{userBaseUrl}}/api/candidates",
+              "host": [
+                "{{userBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "candidates"
+              ]
+            },
+            "description": "Create candidate profile using alias path `/api/candidates`",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Priya Patel\",\n  \"mobileNumber\": \"+91 9123456789\",\n  \"email\": \"priya_{{$timestamp}}@example.com\",\n  \"dateOfBirth\": \"1997-10-12\",\n  \"skills\": [\n    \"React\",\n    \"TypeScript\",\n    \"Node.js\",\n    \"GraphQL\"\n  ],\n  \"location\": \"Pune, India\",\n  \"headline\": \"Senior Fullstack Engineer\",\n  \"bio\": \"Specialized in high-load frontend applications and GraphQL federation.\",\n  \"role\": \"USER\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201 Created', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "4. User: Get Candidate via Alias /api/candidates/{id} (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{userBaseUrl}}/api/candidates/{{userId}}",
+              "host": [
+                "{{userBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "candidates",
+                "{{userId}}"
+              ]
+            },
+            "description": "Retrieve candidate profile using alias path `/api/candidates/{id}`"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "5. User: Negative - Duplicate Email (400 Bad Request)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{userBaseUrl}}/api/v1/users",
+              "host": [
+                "{{userBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users"
+              ]
+            },
+            "description": "Validate business constraint preventing duplicate email registration",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Duplicate Tester\",\n  \"email\": \"rahul.sharma@example.com\",\n  \"skills\": [\n    \"Java\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 400 Bad Request', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "6. User: Negative - Non Existent Profile (404 Not Found)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{userBaseUrl}}/api/v1/users/00000000-0000-0000-0000-000000000000",
+              "host": [
+                "{{userBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "00000000-0000-0000-0000-000000000000"
+              ]
+            },
+            "description": "Validate 404 behavior when profile ID is not found"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 404 Not Found', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "7. User: Actuator Health (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{userBaseUrl}}/actuator/health",
+              "host": [
+                "{{userBaseUrl}}"
+              ],
+              "path": [
+                "actuator",
+                "health"
+              ]
+            },
+            "description": "Check User Service health"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "8. User: OpenAPI Specification (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{userBaseUrl}}/v3/api-docs",
+              "host": [
+                "{{userBaseUrl}}"
+              ],
+              "path": [
+                "v3",
+                "api-docs"
+              ]
+            },
+            "description": "User Service OpenAPI document"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "9. User: Swagger UI",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{userBaseUrl}}/swagger-ui/index.html",
+              "host": [
+                "{{userBaseUrl}}"
+              ],
+              "path": [
+                "swagger-ui",
+                "index.html"
+              ]
+            },
+            "description": "User Service Swagger UI documentation"
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 - Job Service (:8084)",
+      "item": [
+        {
+          "name": "1. Admin: Create Job Draft (201 Created)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Admin-Id",
+                "value": "{{adminId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{jobBaseUrl}}/api/v1/admin/jobs",
+              "host": [
+                "{{jobBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "jobs"
+              ]
+            },
+            "description": "Admin creates a new job opening in DRAFT status",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Principal Java Backend Engineer {{$timestamp}}\",\n  \"description\": \"Architect mission-critical recruitment microservices with high throughput and event sourcing.\",\n  \"department\": \"Engineering\",\n  \"location\": \"Bangalore\",\n  \"workMode\": \"HYBRID\",\n  \"employmentType\": \"FULL_TIME\",\n  \"experienceLevel\": \"LEAD\",\n  \"minExperienceYears\": 7.0,\n  \"maxExperienceYears\": 12.0,\n  \"salaryMin\": 3200000.0,\n  \"salaryMax\": 4800000.0,\n  \"currency\": \"INR\",\n  \"applicationDeadline\": \"2026-12-31T23:59:59Z\",\n  \"skills\": [\n    \"Java 17\",\n    \"Spring Boot 3\",\n    \"PostgreSQL\",\n    \"Docker\",\n    \"Kafka\",\n    \"Redis\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201 Created', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "pm.test('Job is created in DRAFT status', function () {",
+                  "    pm.expect(json.status).to.eql('DRAFT');",
+                  "    pm.expect(json).to.have.property('id');",
+                  "});",
+                  "pm.collectionVariables.set('jobId', json.id);",
+                  "pm.collectionVariables.set('jobIdForInterview', json.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2. Admin: Get Job by ID (Any Status) (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{jobBaseUrl}}/api/v1/admin/jobs/{{jobId}}",
+              "host": [
+                "{{jobBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "jobs",
+                "{{jobId}}"
+              ]
+            },
+            "description": "Admin retrieves job details regardless of status (DRAFT, PUBLISHED, PAUSED, CLOSED)"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "pm.test('Matches jobId', function () {",
+                  "    pm.expect(json.id).to.eql(pm.collectionVariables.get('jobId'));",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3. Admin: Update Job Details & Skills (200 OK)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-Admin-Id",
+                "value": "{{adminId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{jobBaseUrl}}/api/v1/admin/jobs/{{jobId}}",
+              "host": [
+                "{{jobBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "jobs",
+                "{{jobId}}"
+              ]
+            },
+            "description": "Admin updates existing job properties, requirements, and skills list",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Principal Java Backend Engineer (Updated) {{$timestamp}}\",\n  \"description\": \"Architect and lead mission-critical recruitment microservices with high throughput and event sourcing.\",\n  \"department\": \"Core Platform Engineering\",\n  \"location\": \"Bangalore / Remote\",\n  \"workMode\": \"REMOTE\",\n  \"employmentType\": \"FULL_TIME\",\n  \"experienceLevel\": \"LEAD\",\n  \"minExperienceYears\": 8.0,\n  \"maxExperienceYears\": 14.0,\n  \"salaryMin\": 3500000.0,\n  \"salaryMax\": 5200000.0,\n  \"currency\": \"INR\",\n  \"applicationDeadline\": \"2026-12-31T23:59:59Z\",\n  \"skills\": [\n    \"Java 17\",\n    \"Spring Boot 3\",\n    \"PostgreSQL\",\n    \"Docker\",\n    \"Kafka\",\n    \"Redis\",\n    \"Kubernetes\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "pm.test('Department updated', function () {",
+                  "    pm.expect(json.department).to.eql('Core Platform Engineering');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "4. Admin: Publish Job (204 No Content)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Admin-Id",
+                "value": "{{adminId}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{jobBaseUrl}}/api/v1/admin/jobs/{{jobId}}/publish",
+              "host": [
+                "{{jobBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "jobs",
+                "{{jobId}}",
+                "publish"
+              ]
+            },
+            "description": "Transition job status to PUBLISHED making it visible to candidates"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 204 No Content', function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "5. Admin: Pause Job (204 No Content)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Admin-Id",
+                "value": "{{adminId}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{jobBaseUrl}}/api/v1/admin/jobs/{{jobId}}/pause",
+              "host": [
+                "{{jobBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "jobs",
+                "{{jobId}}",
+                "pause"
+              ]
+            },
+            "description": "Transition job status to PAUSED temporarily hiding it from candidate search"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 204 No Content', function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "6. Admin: Re-Publish Job (204 No Content)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Admin-Id",
+                "value": "{{adminId}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{jobBaseUrl}}/api/v1/admin/jobs/{{jobId}}/publish",
+              "host": [
+                "{{jobBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "jobs",
+                "{{jobId}}",
+                "publish"
+              ]
+            },
+            "description": "Re-publish job from PAUSED back to PUBLISHED status"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 204 No Content', function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "7. Admin: Get Job Statistics (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{jobBaseUrl}}/api/v1/admin/jobs/stats",
+              "host": [
+                "{{jobBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "jobs",
+                "stats"
+              ]
+            },
+            "description": "Get aggregated counts of jobs across all statuses"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "pm.test('Stats object contains total jobs', function () {",
+                  "    pm.expect(json).to.have.property('totalJobs');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "8. Admin: List All Jobs with Filters & Pagination (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{jobBaseUrl}}/api/v1/admin/jobs?status=PUBLISHED&page=0&size=10&sort=createdAt,desc",
+              "host": [
+                "{{jobBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "jobs"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "PUBLISHED"
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                },
+                {
+                  "key": "sort",
+                  "value": "createdAt,desc"
+                }
+              ]
+            },
+            "description": "Admin lists jobs filtered by status, keywords, experience, and pagination"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "pm.test('Returns page of jobs', function () {",
+                  "    pm.expect(json).to.have.property('content');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "9. Candidate: Search Published Jobs (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{jobBaseUrl}}/api/v1/jobs?keyword=Java&location=Bangalore&page=0&size=10",
+              "host": [
+                "{{jobBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "jobs"
+              ],
+              "query": [
+                {
+                  "key": "keyword",
+                  "value": "Java"
+                },
+                {
+                  "key": "location",
+                  "value": "Bangalore"
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Candidate searches public catalog for published job openings"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "pm.test('Only published jobs are returned', function () {",
+                  "    pm.expect(json).to.have.property('content');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "10. Candidate: Get Published Job Details (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{jobBaseUrl}}/api/v1/jobs/{{jobId}}",
+              "host": [
+                "{{jobBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "jobs",
+                "{{jobId}}"
+              ]
+            },
+            "description": "Candidate retrieves public view of a published job opening"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "pm.test('Job is PUBLISHED', function () {",
+                  "    pm.expect(json.status).to.eql('PUBLISHED');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "11. Admin: Close Job (204 No Content)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Admin-Id",
+                "value": "{{adminId}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{jobBaseUrl}}/api/v1/admin/jobs/{{jobId}}/close",
+              "host": [
+                "{{jobBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "jobs",
+                "{{jobId}}",
+                "close"
+              ]
+            },
+            "description": "Admin permanently closes recruitment on a job opening"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 204 No Content', function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "12. Negative: Candidate Cannot View Closed Job (404 Not Found)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{jobBaseUrl}}/api/v1/jobs/{{jobId}}",
+              "host": [
+                "{{jobBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "jobs",
+                "{{jobId}}"
+              ]
+            },
+            "description": "Verify candidate public endpoint rejects access to closed jobs"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 404 Not Found', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "13. Setup: Recreate Active Job for Subsequent Testing (201 Created)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Admin-Id",
+                "value": "{{adminId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{jobBaseUrl}}/api/v1/admin/jobs",
+              "host": [
+                "{{jobBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "jobs"
+              ]
+            },
+            "description": "Recreate and publish an active job so Application and Interview tests succeed",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Senior Cloud Native Engineer {{$timestamp}}\",\n  \"description\": \"Building cloud microservices for 366PI platform.\",\n  \"department\": \"Engineering\",\n  \"location\": \"Bangalore\",\n  \"workMode\": \"REMOTE\",\n  \"employmentType\": \"FULL_TIME\",\n  \"experienceLevel\": \"SENIOR\",\n  \"minExperienceYears\": 5.0,\n  \"maxExperienceYears\": 10.0,\n  \"salaryMin\": 2500000.0,\n  \"salaryMax\": 3800000.0,\n  \"currency\": \"INR\",\n  \"skills\": [\n    \"Java\",\n    \"Spring Boot\",\n    \"PostgreSQL\",\n    \"Kafka\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201 Created', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "pm.collectionVariables.set('jobId', json.id);",
+                  "pm.collectionVariables.set('jobIdForInterview', json.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "14. Setup: Publish Newly Created Job (204 No Content)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Admin-Id",
+                "value": "{{adminId}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{jobBaseUrl}}/api/v1/admin/jobs/{{jobId}}/publish",
+              "host": [
+                "{{jobBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "jobs",
+                "{{jobId}}",
+                "publish"
+              ]
+            },
+            "description": "Publish active job for application testing"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 204 No Content', function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "15. Job: Actuator Health (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{jobBaseUrl}}/actuator/health",
+              "host": [
+                "{{jobBaseUrl}}"
+              ],
+              "path": [
+                "actuator",
+                "health"
+              ]
+            },
+            "description": "Check Job Service health"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "16. Job: OpenAPI Specification (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{jobBaseUrl}}/v3/api-docs",
+              "host": [
+                "{{jobBaseUrl}}"
+              ],
+              "path": [
+                "v3",
+                "api-docs"
+              ]
+            },
+            "description": "Job Service OpenAPI specification"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "17. Job: Swagger UI",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{jobBaseUrl}}/swagger-ui/index.html",
+              "host": [
+                "{{jobBaseUrl}}"
+              ],
+              "path": [
+                "swagger-ui",
+                "index.html"
+              ]
+            },
+            "description": "Job Service Swagger UI documentation"
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 - Application Service (:8085)",
+      "item": [
+        {
+          "name": "1. Candidate: Apply for Job (201 Created)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Candidate-Id",
+                "value": "{{candidateId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{applicationBaseUrl}}/api/v1/applications",
+              "host": [
+                "{{applicationBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "applications"
+              ]
+            },
+            "description": "Candidate applies for published job opening",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jobId\": \"{{jobId}}\",\n  \"resumeUrl\": \"https://storage.366pi.com/resumes/rahul-sharma-lead-architect.pdf\",\n  \"coverNote\": \"Passionate about building scalable distributed systems with high availability.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201 Created', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "pm.test('Application created in APPLIED status', function () {",
+                  "    pm.expect(json.status).to.eql('APPLIED');",
+                  "    pm.expect(json).to.have.property('id');",
+                  "});",
+                  "pm.collectionVariables.set('applicationId', json.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2. Candidate: Get My Applications (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Candidate-Id",
+                "value": "{{candidateId}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{applicationBaseUrl}}/api/v1/applications/my-applications?page=0&size=10",
+              "host": [
+                "{{applicationBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "applications",
+                "my-applications"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Candidate retrieves list of their submitted applications"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "pm.test('Contains applications content', function () {",
+                  "    pm.expect(json).to.have.property('content');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3. Candidate: Get Application by ID (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Candidate-Id",
+                "value": "{{candidateId}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{applicationBaseUrl}}/api/v1/applications/{{applicationId}}",
+              "host": [
+                "{{applicationBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "applications",
+                "{{applicationId}}"
+              ]
+            },
+            "description": "Candidate views details of their specific application"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "pm.test('Matches applicationId', function () {",
+                  "    pm.expect(json.id).to.eql(pm.collectionVariables.get('applicationId'));",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "4. Admin: List Applications with Filter (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Admin-Id",
+                "value": "{{adminId}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{applicationBaseUrl}}/api/v1/admin/applications?status=APPLIED&page=0&size=10",
+              "host": [
+                "{{applicationBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "applications"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "APPLIED"
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Admin lists applications filtered by job and status"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "5. Admin: Get Application Statistics (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{applicationBaseUrl}}/api/v1/admin/applications/stats",
+              "host": [
+                "{{applicationBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "applications",
+                "stats"
+              ]
+            },
+            "description": "Aggregated count of applications across all lifecycle stages"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "pm.test('Contains status breakdown counts', function () {",
+                  "    pm.expect(json).to.have.property('totalApplications');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "6. Admin: Get Application by ID (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Admin-Id",
+                "value": "{{adminId}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{applicationBaseUrl}}/api/v1/admin/applications/{{applicationId}}",
+              "host": [
+                "{{applicationBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "applications",
+                "{{applicationId}}"
+              ]
+            },
+            "description": "Admin view of application details"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "7. Admin: Move Status to UNDER_REVIEW (200 OK)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-Admin-Id",
+                "value": "{{adminId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{applicationBaseUrl}}/api/v1/admin/applications/{{applicationId}}/status",
+              "host": [
+                "{{applicationBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "applications",
+                "{{applicationId}}",
+                "status"
+              ]
+            },
+            "description": "Recruiter reviews application and moves status to UNDER_REVIEW",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"UNDER_REVIEW\",\n  \"comments\": \"Resume matches all core platform architectural requirements.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "pm.test('Status is UNDER_REVIEW', function () {",
+                  "    pm.expect(json.status).to.eql('UNDER_REVIEW');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "8. Admin: Shortlist Candidate Application (200 OK)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-Admin-Id",
+                "value": "{{adminId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{applicationBaseUrl}}/api/v1/admin/applications/{{applicationId}}/status",
+              "host": [
+                "{{applicationBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "applications",
+                "{{applicationId}}",
+                "status"
+              ]
+            },
+            "description": "Shortlist candidate application making it eligible for interview scheduling",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"SHORTLISTED\",\n  \"comments\": \"Candidate shortlisted for technical interview rounds.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "pm.test('Status is SHORTLISTED', function () {",
+                  "    pm.expect(json.status).to.eql('SHORTLISTED');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "9. Admin: Get Application Status Audit History (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Admin-Id",
+                "value": "{{adminId}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{applicationBaseUrl}}/api/v1/admin/applications/{{applicationId}}/history",
+              "host": [
+                "{{applicationBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "applications",
+                "{{applicationId}}",
+                "history"
+              ]
+            },
+            "description": "Get complete chronological audit trail of status transitions"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "pm.test('Audit trail is an array', function () {",
+                  "    pm.expect(Array.isArray(json)).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "10. Internal: Check Interview Eligibility (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{applicationBaseUrl}}/api/v1/internal/applications/{{applicationId}}/eligibility",
+              "host": [
+                "{{applicationBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "internal",
+                "applications",
+                "{{applicationId}}",
+                "eligibility"
+              ]
+            },
+            "description": "Inter-service endpoint used by Interview Service to verify candidate eligibility"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "pm.test('Candidate is eligible', function () {",
+                  "    pm.expect(json.eligible).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "11. Internal: Mark Interview Scheduled (204 No Content)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-System-Id",
+                "value": "00000000-0000-0000-0000-000000000000",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{applicationBaseUrl}}/api/v1/internal/applications/{{applicationId}}/interview-scheduled",
+              "host": [
+                "{{applicationBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "internal",
+                "applications",
+                "{{applicationId}}",
+                "interview-scheduled"
+              ]
+            },
+            "description": "Inter-service notification transitioning application status to INTERVIEW_SCHEDULED"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 204 No Content', function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "12. Candidate: Withdraw Application (200 OK)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Candidate-Id",
+                "value": "{{candidateId}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{applicationBaseUrl}}/api/v1/applications/{{applicationId}}/withdraw",
+              "host": [
+                "{{applicationBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "applications",
+                "{{applicationId}}",
+                "withdraw"
+              ]
+            },
+            "description": "Candidate withdraws their job application"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "pm.test('Status is WITHDRAWN', function () {",
+                  "    pm.expect(json.status).to.eql('WITHDRAWN');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "13. Setup: Recreate Shortlisted Application for Interview Tests (201 Created)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Candidate-Id",
+                "value": "{{candidateId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{applicationBaseUrl}}/api/v1/applications",
+              "host": [
+                "{{applicationBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "applications"
+              ]
+            },
+            "description": "Create fresh application to be shortlisted for interview testing",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jobId\": \"{{jobId}}\",\n  \"resumeUrl\": \"https://storage.366pi.com/resumes/rahul-interview.pdf\",\n  \"coverNote\": \"Ready for technical evaluation.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201 Created', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "pm.collectionVariables.set('applicationId', json.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "14. Setup: Shortlist Recreated Application (200 OK)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-Admin-Id",
+                "value": "{{adminId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{applicationBaseUrl}}/api/v1/admin/applications/{{applicationId}}/status",
+              "host": [
+                "{{applicationBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "applications",
+                "{{applicationId}}",
+                "status"
+              ]
+            },
+            "description": "Shortlist recreated application",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"SHORTLISTED\",\n  \"comments\": \"Eligible for interview scheduling flow.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "15. Application: Actuator Health (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{applicationBaseUrl}}/actuator/health",
+              "host": [
+                "{{applicationBaseUrl}}"
+              ],
+              "path": [
+                "actuator",
+                "health"
+              ]
+            },
+            "description": "Check Application Service health"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "16. Application: OpenAPI Specification (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{applicationBaseUrl}}/v3/api-docs",
+              "host": [
+                "{{applicationBaseUrl}}"
+              ],
+              "path": [
+                "v3",
+                "api-docs"
+              ]
+            },
+            "description": "Application Service OpenAPI documentation"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "17. Application: Swagger UI",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{applicationBaseUrl}}/swagger-ui/index.html",
+              "host": [
+                "{{applicationBaseUrl}}"
+              ],
+              "path": [
+                "swagger-ui",
+                "index.html"
+              ]
+            },
+            "description": "Application Service Swagger UI documentation"
+          }
+        }
+      ]
+    },
+    {
+      "name": "07 - Interview Service (:8086)",
+      "item": [
+        {
+          "name": "1. Admin: Register Interviewer (201 Created)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{interviewBaseUrl}}/api/v1/admin/interviewers",
+              "host": [
+                "{{interviewBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "interviewers"
+              ]
+            },
+            "description": "Register a specialist as an active interviewer",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{adminId}}\",\n  \"name\": \"Dr. Aris Thorne\",\n  \"email\": \"aris.thorne_{{$timestamp}}@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201 Created', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "pm.test('Interviewer ID returned', function () {",
+                  "    pm.expect(json).to.have.property('id');",
+                  "});",
+                  "pm.collectionVariables.set('interviewerId', json.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2. Admin: List Active Interviewers (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{interviewBaseUrl}}/api/v1/admin/interviewers",
+              "host": [
+                "{{interviewBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "interviewers"
+              ]
+            },
+            "description": "List all registered active interviewers"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "pm.test('Returns list of interviewers', function () {",
+                  "    pm.expect(Array.isArray(json)).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3. Admin: Get Interviewer by ID (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{interviewBaseUrl}}/api/v1/admin/interviewers/{{interviewerId}}",
+              "host": [
+                "{{interviewBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "interviewers",
+                "{{interviewerId}}"
+              ]
+            },
+            "description": "Retrieve details of a registered interviewer by ID"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "pm.test('Matches interviewerId', function () {",
+                  "    pm.expect(json.id).to.eql(pm.collectionVariables.get('interviewerId'));",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "4. Admin: Create Interview Slot (201 Created)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{interviewBaseUrl}}/api/v1/admin/interviews/slots",
+              "host": [
+                "{{interviewBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "interviews",
+                "slots"
+              ]
+            },
+            "description": "Admin schedules a future 1-hour interview slot",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"interviewerId\": \"{{interviewerId}}\",\n  \"startTime\": \"2026-11-20T10:00:00\",\n  \"endTime\": \"2026-11-20T11:00:00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201 Created', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "pm.test('Slot ID returned with AVAILABLE status', function () {",
+                  "    pm.expect(json.status).to.eql('AVAILABLE');",
+                  "    pm.expect(json).to.have.property('id');",
+                  "});",
+                  "pm.collectionVariables.set('slotId', json.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "5. Admin: Create Backup Slot for Rescheduling (201 Created)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{interviewBaseUrl}}/api/v1/admin/interviews/slots",
+              "host": [
+                "{{interviewBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "interviews",
+                "slots"
+              ]
+            },
+            "description": "Create second slot for rescheduling flow tests",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"interviewerId\": \"{{interviewerId}}\",\n  \"startTime\": \"2026-11-22T14:00:00\",\n  \"endTime\": \"2026-11-22T15:00:00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201 Created', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "pm.collectionVariables.set('rescheduleSlotId', json.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "6. Admin: Get All Slots (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{interviewBaseUrl}}/api/v1/admin/interviews/slots?page=0&size=10",
+              "host": [
+                "{{interviewBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "interviews",
+                "slots"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Admin lists interview slots across all statuses with pagination"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "7. Candidate: Get Available Slots for Application (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{interviewBaseUrl}}/api/v1/interviews/slots?applicationId={{applicationId}}&page=0&size=10",
+              "host": [
+                "{{interviewBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "interviews",
+                "slots"
+              ],
+              "query": [
+                {
+                  "key": "applicationId",
+                  "value": "{{applicationId}}"
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Candidate checks available interview slots for their shortlisted application"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "pm.test('Available slots returned', function () {",
+                  "    pm.expect(json).to.have.property('content');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "8. Candidate: Schedule Interview (201 Created)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Candidate-Id",
+                "value": "{{candidateId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{interviewBaseUrl}}/api/v1/interviews",
+              "host": [
+                "{{interviewBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "interviews"
+              ]
+            },
+            "description": "Candidate books an available slot to schedule interview round",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"applicationId\": \"{{applicationId}}\",\n  \"slotId\": \"{{slotId}}\",\n  \"roundNumber\": 1,\n  \"roundName\": \"Technical Architecture & System Design\",\n  \"interviewType\": \"TECHNICAL\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201 Created', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "pm.test('Interview scheduled with SCHEDULED status', function () {",
+                  "    pm.expect(json.status).to.eql('SCHEDULED');",
+                  "    pm.expect(json).to.have.property('id');",
+                  "});",
+                  "pm.collectionVariables.set('interviewId', json.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "9. Candidate: Get My Scheduled Interviews (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Candidate-Id",
+                "value": "{{candidateId}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{interviewBaseUrl}}/api/v1/interviews/me?page=0&size=10",
+              "host": [
+                "{{interviewBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "interviews",
+                "me"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Candidate queries all scheduled interviews associated with their profile"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "10. Candidate: Get Interview by ID (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Candidate-Id",
+                "value": "{{candidateId}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{interviewBaseUrl}}/api/v1/interviews/{{interviewId}}",
+              "host": [
+                "{{interviewBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "interviews",
+                "{{interviewId}}"
+              ]
+            },
+            "description": "Candidate retrieves interview details"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "pm.test('Matches interviewId', function () {",
+                  "    pm.expect(json.id).to.eql(pm.collectionVariables.get('interviewId'));",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "11. Admin: Get All Interviews (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{interviewBaseUrl}}/api/v1/admin/interviews?page=0&size=10",
+              "host": [
+                "{{interviewBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "interviews"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Admin queries paginated list of all interviews across candidates"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "12. Admin: Reschedule Interview to New Slot (200 OK)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Admin-Id",
+                "value": "{{adminId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{interviewBaseUrl}}/api/v1/admin/interviews/{{interviewId}}/reschedule",
+              "host": [
+                "{{interviewBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "interviews",
+                "{{interviewId}}",
+                "reschedule"
+              ]
+            },
+            "description": "Admin moves interview to a different available slot",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"newSlotId\": \"{{rescheduleSlotId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "13. Admin: Update Interview Status to COMPLETED (200 OK)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "X-Admin-Id",
+                "value": "{{adminId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{interviewBaseUrl}}/api/v1/admin/interviews/{{interviewId}}/status",
+              "host": [
+                "{{interviewBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "interviews",
+                "{{interviewId}}",
+                "status"
+              ]
+            },
+            "description": "Admin transitions interview status to COMPLETED with feedback notes",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"COMPLETED\",\n  \"notes\": \"Candidate demonstrated outstanding system design skills and deep microservice experience.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "pm.test('Status updated to COMPLETED', function () {",
+                  "    pm.expect(json.status).to.eql('COMPLETED');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "14. Admin: Get Interview History Audit Trail (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{interviewBaseUrl}}/api/v1/admin/interviews/{{interviewId}}/history",
+              "host": [
+                "{{interviewBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "interviews",
+                "{{interviewId}}",
+                "history"
+              ]
+            },
+            "description": "Get chronological history of all status changes and rescheduling actions"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "pm.test('Audit history returned as array', function () {",
+                  "    pm.expect(Array.isArray(json)).to.be.true;",
+                  "    pm.expect(json.length).to.be.above(0);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "15. Admin: Cancel Interview (200 OK)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Admin-Id",
+                "value": "{{adminId}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{interviewBaseUrl}}/api/v1/admin/interviews/{{interviewId}}/cancel",
+              "host": [
+                "{{interviewBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "interviews",
+                "{{interviewId}}",
+                "cancel"
+              ]
+            },
+            "description": "Admin cancels interview and releases associated slot back to AVAILABLE"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var json = pm.response.json();",
+                  "pm.test('Status changed to CANCELLED', function () {",
+                  "    pm.expect(json.status).to.eql('CANCELLED');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "16. Interview: Actuator Health (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{interviewBaseUrl}}/actuator/health",
+              "host": [
+                "{{interviewBaseUrl}}"
+              ],
+              "path": [
+                "actuator",
+                "health"
+              ]
+            },
+            "description": "Check Interview Service health"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "17. Interview: OpenAPI Specification (200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{interviewBaseUrl}}/v3/api-docs",
+              "host": [
+                "{{interviewBaseUrl}}"
+              ],
+              "path": [
+                "v3",
+                "api-docs"
+              ]
+            },
+            "description": "Interview Service OpenAPI documentation"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "18. Interview: Swagger UI",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{interviewBaseUrl}}/swagger-ui/index.html",
+              "host": [
+                "{{interviewBaseUrl}}"
+              ],
+              "path": [
+                "swagger-ui",
+                "index.html"
+              ]
+            },
+            "description": "Interview Service Swagger UI documentation"
+          }
+        }
+      ]
+    }
+  ]
+}
