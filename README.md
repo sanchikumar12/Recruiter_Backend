@@ -1,31 +1,256 @@
-# 366PI Core Backend Microservices
+# 366PI Recruitment Platform — Core Backend Microservices
 
-Production-grade, distributed core backend microservices for the **366PI Recruitment Platform**, built using **Java 17**, **Spring Boot 3.5**, **Spring Cloud 2025 (Eureka)**, **Spring Boot Admin**, **PostgreSQL**, and **OpenAPI (Swagger)**.
+Production-grade, distributed backend microservices architecture for the **366PI Recruitment Platform**, built using **Java 17**, **Spring Boot 3.5**, **Spring Cloud 2025 (Eureka)**, **Spring Boot Admin**, **PostgreSQL**, and **OpenAPI (Swagger)**.
 
-This repository provides the core authentication, user profile management, service discovery, and centralized administrative monitoring needed for frontend testing and API integration.
+This repository provides the core authentication, user profile management, service discovery, and centralized administrative monitoring needed for frontend integration and end-to-end testing.
 
 ---
 
-## 🏛️ Architecture Overview
+## 🏛️ Full Architecture Design (HLD & LLD)
+
+### 1. High-Level System Architecture (HLD)
+
+The system is designed following the **Microservices Architecture Pattern** and the **Database-per-Service Pattern** to ensure high cohesion, loose coupling, independent scalability, and fault tolerance.
 
 ```mermaid
-graph TD
-    Client[Frontend Web / Postman Clients] --> Auth[Auth Service :8083]
-    Client --> User[User Service :8081]
+graph TB
+    subgraph Client_Layer [Client Tier]
+        FE[Frontend SPA: React / Angular]
+        Mobile[Mobile Application]
+        PostmanClient[API Consumers / Postman Suite]
+    end
 
-    Auth --> Eureka[Eureka Discovery Server :8761]
-    User --> Eureka
+    subgraph Gateway_Layer [Edge & Routing Tier]
+        Gateway[API Gateway :8080<br/>Authentication - Routing - Rate Limiting]
+    end
 
-    Admin[Spring Boot Admin :8082] --> Eureka
-    
-    Auth --> PostgresAuth[(PostgreSQL: auth_db)]
-    User --> PostgresUser[(PostgreSQL: user_db)]
+    subgraph Infrastructure_Layer [Service Discovery & Monitoring]
+        Eureka[Eureka Discovery Server :8761<br/>Service Registry & Dynamic Routing]
+        AdminServer[Spring Boot Admin :8082<br/>Centralized Actuator & Health Console]
+    end
+
+    subgraph Core_Services [Current Core Microservices Tier]
+        AuthSvc[Auth Service :8083<br/>JWT - BCrypt - Tokens - Sessions]
+        UserSvc[User Service :8081<br/>Candidate Profiles - Skills - Bios]
+    end
+
+    subgraph Downstream_Services [Downstream Platform Modules]
+        JobSvc[Job Service :8084<br/>Job Catalog & Requisition Management]
+        AppSvc[Application Service :8085<br/>Lifecycle State Machine & Screening]
+        InterviewSvc[Interview Service :8086<br/>Slot Management & Scheduling]
+        NotifSvc[Notification Service<br/>Email & In-App Alerts]
+    end
+
+    subgraph Database_Layer [Database Tier - PostgreSQL :5432]
+        AuthDB[(auth_db<br/>Auth Users, Refresh Tokens)]
+        UserDB[(user_db<br/>Users, User Skills)]
+        JobDB[(job_db<br/>Jobs, Job Skills)]
+        AppDB[(application_db<br/>Applications, History)]
+        InterviewDB[(interview_db<br/>Interviewers, Slots, Interviews)]
+    end
+
+    subgraph Event_Bus [Asynchronous Messaging - Phase 2]
+        Kafka[Apache Kafka<br/>Event Streaming Bus]
+    end
+
+    %% Client to Edge / Services
+    FE --> Gateway
+    Mobile --> Gateway
+    PostmanClient --> AuthSvc
+    PostmanClient --> UserSvc
+    Gateway --> AuthSvc
+    Gateway --> UserSvc
+    Gateway -.-> JobSvc
+    Gateway -.-> AppSvc
+    Gateway -.-> InterviewSvc
+
+    %% Service to Discovery & Monitoring
+    AuthSvc -->|Registers & Heartbeats| Eureka
+    UserSvc -->|Registers & Heartbeats| Eureka
+    JobSvc -.-> Eureka
+    AppSvc -.-> Eureka
+    InterviewSvc -.-> Eureka
+    AdminServer -->|Discovers Instances| Eureka
+    AdminServer -->|Scrapes /actuator| AuthSvc
+    AdminServer -->|Scrapes /actuator| UserSvc
+
+    %% Inter-service sync
+    UserSvc -->|Inter-Service REST / Feign| AuthSvc
+    AppSvc -.-> JobSvc
+    InterviewSvc -.-> AppSvc
+
+    %% Database connections (Strict Database-per-Service)
+    AuthSvc --> AuthDB
+    UserSvc --> UserDB
+    JobSvc -.-> JobDB
+    AppSvc -.-> AppDB
+    InterviewSvc -.-> InterviewDB
+
+    %% Async messaging
+    AuthSvc -.->|Publishes UserRegisteredEvent| Kafka
+    Kafka -.->|Subscribes| NotifSvc
 ```
 
-### Services & Port Mapping
+---
+
+### 2. Core Architectural Patterns & Principles
+
+1. **Database-per-Service Pattern**:
+   - Each microservice strictly owns its own dedicated database (`auth_db` vs `user_db`).
+   - Direct cross-database joins are prohibited; services communicate exclusively through clean REST APIs or asynchronous events.
+2. **Service Discovery & Registration (Netflix Eureka)**:
+   - Services automatically discover each other via Eureka without hardcoding IP addresses or ports.
+   - Heartbeat health checks (every 30s) automatically deregister unhealthy instances.
+3. **Centralized Health & Observability (Spring Boot Admin)**:
+   - Centrally aggregates Spring Boot Actuator endpoints (`/health`, `/metrics`, `/env`, `/mappings`).
+   - Real-time memory, JVM, thread metrics, and log level modifications without service restarts.
+4. **Stateless Authentication & Cryptographic Token Architecture**:
+   - Short-lived JSON Web Tokens (JWT) signed with HMAC-SHA256 (15-minute expiry).
+   - Long-lived, cryptographically random, rotatable Refresh Tokens (7-day expiry) stored in PostgreSQL with immediate revocation capabilities.
+   - BCrypt hashing with salt factor 12 for password protection.
+5. **Idempotent Database Migrations (Flyway)**:
+   - Versioned SQL migration scripts (`V1__...sql`, `V2__...sql`) executed automatically upon container startup to guarantee repeatable, reproducible schema across environments.
+
+---
+
+### 3. Detailed Microservice Workflows (Sequence Diagrams)
+
+#### A. Candidate Registration & Profile Creation Workflow
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Candidate as Candidate / Frontend
+    participant UserSvc as User Service (:8081)
+    participant AuthSvc as Auth Service (:8083)
+    participant AuthDB as PostgreSQL (auth_db)
+    participant UserDB as PostgreSQL (user_db)
+
+    Candidate->>UserSvc: POST /api/v1/users (Profile + Email + Password)
+    UserSvc->>UserDB: Check existsByEmail(email)
+    alt Email already exists
+        UserDB-->>UserSvc: true
+        UserSvc-->>Candidate: 400 Bad Request (Email already exists)
+    else Email is unique
+        UserSvc->>AuthSvc: POST /api/v1/auth/register (Email, Password, Role)
+        AuthSvc->>AuthDB: Check email duplicate & hash password (BCrypt)
+        AuthSvc->>AuthDB: Save AuthUser & generate ActivationToken
+        AuthDB-->>AuthSvc: auth_user_id
+        AuthSvc-->>UserSvc: 201 Created (authUserId, generatedPassword, status)
+        UserSvc->>UserDB: Save User Entity + Skills (user_skills)
+        UserDB-->>UserSvc: user_id (UUID)
+        UserSvc-->>Candidate: 201 Created (UserResponse: id, authUserId, skills, status)
+    end
+```
+
+#### B. User Authentication & Token Rotation Workflow
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Client as Frontend / Postman
+    participant AuthSvc as Auth Service (:8083)
+    participant AuthDB as PostgreSQL (auth_db)
+
+    Client->>AuthSvc: POST /api/v1/auth/login (email, password)
+    AuthSvc->>AuthDB: Find AuthUser by email
+    AuthSvc->>AuthSvc: Verify password using BCrypt
+    alt Invalid Credentials
+        AuthSvc->>AuthDB: Increment failed_attempts (Lock after 5 attempts)
+        AuthSvc-->>Client: 401 Unauthorized / 423 Locked
+    else Valid Credentials
+        AuthSvc->>AuthSvc: Generate signed JWT Access Token (15 min)
+        AuthSvc->>AuthDB: Store new Refresh Token (7 days)
+        AuthSvc-->>Client: 200 OK (accessToken, refreshToken, userId)
+    end
+
+    Note over Client,AuthSvc: Later: Refresh Token Rotation
+    Client->>AuthSvc: POST /api/v1/auth/refresh (refreshToken)
+    AuthSvc->>AuthDB: Validate & revoke old refresh token
+    AuthSvc->>AuthDB: Issue new rotated refresh token
+    AuthSvc->>AuthSvc: Generate new access token
+    AuthSvc-->>Client: 200 OK (new accessToken, new rotated refreshToken)
+```
+
+---
+
+### 4. Entity-Relationship & Database Schema Design (ERD)
+
+```mermaid
+erDiagram
+    %% Auth Service Database
+    AUTH_USERS ||--o{ REFRESH_TOKENS : has
+    AUTH_USERS ||--o{ ACTIVATION_TOKENS : has
+    AUTH_USERS ||--o{ PASSWORD_RESET_TOKENS : has
+
+    AUTH_USERS {
+        uuid id PK
+        varchar email UK
+        varchar password_hash
+        varchar role
+        varchar account_status
+        int failed_login_attempts
+        timestamp lock_expiration
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    REFRESH_TOKENS {
+        uuid id PK
+        uuid user_id FK
+        varchar token UK
+        boolean revoked
+        timestamp expires_at
+        timestamp created_at
+    }
+
+    ACTIVATION_TOKENS {
+        uuid id PK
+        uuid user_id FK
+        varchar token UK
+        boolean consumed
+        timestamp expires_at
+        timestamp created_at
+    }
+
+    PASSWORD_RESET_TOKENS {
+        uuid id PK
+        uuid user_id FK
+        varchar token UK
+        boolean consumed
+        timestamp expires_at
+        timestamp created_at
+    }
+
+    %% User Service Database
+    USERS ||--|{ USER_SKILLS : contains
+
+    USERS {
+        uuid id PK
+        uuid auth_user_id UK
+        varchar full_name
+        varchar mobile_number
+        varchar email UK
+        date date_of_birth
+        varchar location
+        varchar headline
+        text bio
+        varchar status
+        varchar role
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    USER_SKILLS {
+        uuid user_id FK
+        varchar skill
+    }
+```
+
+---
+
+## 🧭 Services & Port Mapping
 
 | Service | Port | Database | Swagger / OpenAPI UI | Description |
-|---|---|---|---|---|
+|---|:---:|:---:|:---:|---|
 | **Discovery Server** | `8761` | — | [Dashboard](http://localhost:8761) | Netflix Eureka service discovery & instance registry |
 | **Admin Server** | `8082` | — | [Admin UI](http://localhost:8082) | Spring Boot Admin monitoring & health console |
 | **Auth Service** | `8083` | `auth_db` | [Swagger UI](http://localhost:8083/swagger-ui.html) | JWT Auth, Registration, Login, Token Rotation, Password Reset |
@@ -190,6 +415,7 @@ If STS shows *"The method getId() is undefined for type..."*:
    ```
 2. Select your `SpringToolSuite4.exe` installation directory and click **Install / Update**.
 3. Restart STS with the `-clean` flag.
+*(Note: `user-service` has been fully updated with explicit standard Java getters/setters/constructors, making it 100% independent of Lombok in STS).*
 
 ### STS / Eclipse: Project Import
 1. In STS, choose **File** $\rightarrow$ **Import...** $\rightarrow$ **Maven** $\rightarrow$ **Existing Maven Projects**.
