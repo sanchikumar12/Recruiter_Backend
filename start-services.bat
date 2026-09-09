@@ -1,7 +1,11 @@
 @echo off
-title 366PI Core Microservices Launcher (Discovery, Admin, Auth, User)
+title 366PI Core Services Launcher (Eureka, Admin, Auth, User)
 echo =======================================================
-echo   Starting 366PI Core Backend Microservices
+echo   Starting 366PI Core Microservices
+echo   1. Eureka Discovery Server  :8761
+echo   2. Spring Boot Admin Server :8082
+echo   3. Auth Service             :8083
+echo   4. User Service             :8081
 echo =======================================================
 
 echo [1/4] Starting Eureka Discovery Server (Port 8761)...
@@ -20,10 +24,10 @@ echo [4/4] Starting User Service (Port 8081)...
 start "User-Service (8081)" cmd /c "cd /d %~dp0user-service && ..\mvnw.cmd spring-boot:run"
 
 echo =======================================================
-echo   Core microservices have been launched!
+echo   All 4 core services have been launched!
 echo   Eureka Dashboard:       http://localhost:8761
 echo   Spring Boot Admin:      http://localhost:8082
-echo   Auth Service API Docs:  http://localhost:8083/swagger-ui.html
-echo   User Service API Docs:  http://localhost:8081/swagger-ui.html
+echo   Auth Service Swagger:   http://localhost:8083/swagger-ui.html
+echo   User Service Swagger:   http://localhost:8081/swagger-ui.html
 echo =======================================================
 pause

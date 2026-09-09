@@ -17,9 +17,6 @@
         <module>admin-server</module>
         <module>user-service</module>
         <module>auth-service</module>
-        <module>job-service</module>
-        <module>application-service</module>
-        <module>interview-service</module>
     </modules>
 
     <properties>

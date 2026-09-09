@@ -49,3 +49,22 @@ logs/
 newman/
 newman_report.txt
 scratch/
+generate_collection.py
+generate_core_collection.py
+
+# Exclude secondary microservices (not part of core release)
+job-service/
+application-service/
+interview-service/
+job-implemntation.md
+interview-implementation.md
+application.md
+auth-service-implementation.md
+implementation.md
+HLD
+start-all-services.bat
+start-core-services.bat
+stop-all-services.bat
+366pi_master_microservices.postman_collection.json
+366pi_recruitment_app.postman_collection.json
+366pi_local.postman_environment.json
